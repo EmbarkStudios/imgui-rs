@@ -566,7 +566,7 @@ impl WinitPlatform {
                 }
             },
             WindowEvent::MouseInput { state, button, .. } => {
-                let pressed = state == ElementState::Pressed;
+                let pressed = *state == ElementState::Pressed;
                 match button {
                     MouseButton::Left => io.mouse_down[0] = pressed,
                     MouseButton::Right => io.mouse_down[1] = pressed,
