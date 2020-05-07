@@ -239,7 +239,7 @@ impl WinitPlatform {
     /// This utility function is useful if you are using a DPI mode other than default, and want
     /// your application to use the same logical coordinates as imgui-rs.
     #[cfg(feature = "winit-20")]
-    pub fn scale_size_from_winit(&self, window: &Window, logical_size: LogicalSize) -> LogicalSize {
+    pub fn scale_size_from_winit(&self, window: &Window, logical_size: LogicalSize<f64>) -> LogicalSize<f64> {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_size,
             _ => logical_size
@@ -272,8 +272,8 @@ impl WinitPlatform {
     pub fn scale_pos_from_winit(
         &self,
         window: &Window,
-        logical_pos: LogicalPosition,
-    ) -> LogicalPosition {
+        logical_pos: LogicalPosition<f64>,
+    ) -> LogicalPosition<f64> {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_pos,
             _ => logical_pos
@@ -306,8 +306,8 @@ impl WinitPlatform {
     pub fn scale_pos_for_winit(
         &self,
         window: &Window,
-        logical_pos: LogicalPosition,
-    ) -> LogicalPosition {
+        logical_pos: LogicalPosition<f64>,
+    ) -> LogicalPosition<f64> {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_pos,
             _ => logical_pos
