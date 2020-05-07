@@ -207,12 +207,11 @@ impl WinitPlatform {
     /// * display size is set
     #[cfg(feature = "winit-20")]
     pub fn attach_window(&mut self, io: &mut Io, window: &Window, hidpi_mode: HiDpiMode) {
-        let (hidpi_mode, hidpi_factor) = hidpi_mode.apply(window.hidpi_factor());
+        let (hidpi_mode, hidpi_factor) = hidpi_mode.apply(window.scale_factor());
         self.hidpi_mode = hidpi_mode;
         self.hidpi_factor = hidpi_factor;
         io.display_framebuffer_scale = [hidpi_factor as f32, hidpi_factor as f32];
-        let logical_size = window.inner_size();
-        let logical_size = self.scale_size_from_winit(window, logical_size);
+        let logical_size = window.inner_size().to_logical(window.scale_factor());
         io.display_size = [logical_size.width as f32, logical_size.height as f32];
     }
     /// Returns the current DPI factor.
@@ -243,7 +242,7 @@ impl WinitPlatform {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_size,
             _ => logical_size
-                .to_physical(window.hidpi_factor())
+                .to_physical(window.scale_factor())
                 .to_logical(self.hidpi_factor),
         }
     }
@@ -277,7 +276,7 @@ impl WinitPlatform {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_pos,
             _ => logical_pos
-                .to_physical(window.hidpi_factor())
+                .to_physical(window.scale_factor())
                 .to_logical(self.hidpi_factor),
         }
     }
@@ -312,7 +311,7 @@ impl WinitPlatform {
             ActiveHiDpiMode::Default => logical_pos,
             _ => logical_pos
                 .to_physical(self.hidpi_factor)
-                .to_logical(window.hidpi_factor()),
+                .to_logical(window.scale_factor()),
         }
     }
     /// Handles a winit event.
@@ -400,7 +399,7 @@ impl WinitPlatform {
                 let logical_size = self.scale_size_from_winit(window, logical_size);
                 io.display_size = [logical_size.width as f32, logical_size.height as f32];
             }
-            WindowEvent::HiDpiFactorChanged(scale) => {
+            WindowEvent::ScaleFactorChanged { scale_factor, new_inner_size} => {
                 let hidpi_factor = match self.hidpi_mode {
                     ActiveHiDpiMode::Default => scale,
                     ActiveHiDpiMode::Rounded => scale.round(),
@@ -511,8 +510,7 @@ impl WinitPlatform {
                 self.hidpi_factor = hidpi_factor;
                 io.display_framebuffer_scale = [hidpi_factor as f32, hidpi_factor as f32];
                 // Window size might change too if we are using DPI rounding
-                let logical_size = window.inner_size();
-                let logical_size = self.scale_size_from_winit(window, logical_size);
+                let logical_size = window.inner_size().to_logical(window.scale_factor());
                 io.display_size = [logical_size.width as f32, logical_size.height as f32];
             }
             WindowEvent::KeyboardInput {
@@ -542,7 +540,7 @@ impl WinitPlatform {
                 }
             }
             WindowEvent::CursorMoved { position, .. } => {
-                let position = self.scale_pos_from_winit(window, position);
+                let position = position.to_logical(window.scale_factor());
                 io.mouse_pos = [position.x as f32, position.y as f32];
             }
             WindowEvent::MouseWheel {
