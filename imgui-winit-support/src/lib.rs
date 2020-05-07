@@ -495,7 +495,7 @@ impl WinitPlatform {
             }
             WindowEvent::ScaleFactorChanged { scale_factor, new_inner_size } => {
                 let hidpi_factor = match self.hidpi_mode {
-                    ActiveHiDpiMode::Default => scale_factor,
+                    ActiveHiDpiMode::Default => *scale_factor,
                     ActiveHiDpiMode::Rounded => scale_factor.round(),
                     _ => return,
                 };
@@ -536,11 +536,11 @@ impl WinitPlatform {
                 // Exclude the backspace key ('\u{7f}'). Otherwise we will insert this char and then
                 // delete it.
                 if ch != '\u{7f}' {
-                    io.add_input_character(ch)
+                    io.add_input_character(*ch)
                 }
             }
             WindowEvent::CursorMoved { position, .. } => {
-                let position = position.to_logical::<f64>(window.scale_factor());
+                let position = (*position).to_logical::<f64>(window.scale_factor());
                 io.mouse_pos = [position.x as f32, position.y as f32];
             }
             WindowEvent::MouseWheel {
@@ -549,8 +549,8 @@ impl WinitPlatform {
                 ..
             } => match delta {
                 MouseScrollDelta::LineDelta(h, v) => {
-                    io.mouse_wheel_h = h;
-                    io.mouse_wheel = v;
+                    io.mouse_wheel_h = *h;
+                    io.mouse_wheel = *v;
                 }
                 MouseScrollDelta::PixelDelta(pos) => {
                     match pos.x.partial_cmp(&0.0) {
