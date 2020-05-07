@@ -488,7 +488,7 @@ impl WinitPlatform {
     }
     #[cfg(feature = "winit-20")]
     fn handle_window_event(&mut self, io: &mut Io, window: &Window, event: &WindowEvent) {
-        match *event {
+        match event {
             WindowEvent::Resized(logical_size) => {
                 let logical_size = logical_size.to_logical::<f64>(window.scale_factor());
                 io.display_size = [logical_size.width as f32, logical_size.height as f32];
