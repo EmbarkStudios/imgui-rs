@@ -211,7 +211,7 @@ impl WinitPlatform {
         self.hidpi_mode = hidpi_mode;
         self.hidpi_factor = hidpi_factor;
         io.display_framebuffer_scale = [hidpi_factor as f32, hidpi_factor as f32];
-        let logical_size = window.inner_size().to_logical(window.scale_factor());
+        let logical_size = window.inner_size().to_logical::<f64>(window.scale_factor());
         io.display_size = [logical_size.width as f32, logical_size.height as f32];
     }
     /// Returns the current DPI factor.
@@ -242,8 +242,8 @@ impl WinitPlatform {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_size,
             _ => logical_size
-                .to_physical(window.scale_factor())
-                .to_logical(self.hidpi_factor),
+                .to_physical::<f64>(window.scale_factor())
+                .to_logical::<f64>(self.hidpi_factor),
         }
     }
     /// Scales a logical position coming from winit using the current DPI mode.
@@ -276,8 +276,8 @@ impl WinitPlatform {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_pos,
             _ => logical_pos
-                .to_physical(window.scale_factor())
-                .to_logical(self.hidpi_factor),
+                .to_physical::<f64>(window.scale_factor())
+                .to_logical::<f64>(self.hidpi_factor),
         }
     }
     /// Scales a logical position for winit using the current DPI mode.
@@ -310,8 +310,8 @@ impl WinitPlatform {
         match self.hidpi_mode {
             ActiveHiDpiMode::Default => logical_pos,
             _ => logical_pos
-                .to_physical(self.hidpi_factor)
-                .to_logical(window.scale_factor()),
+                .to_physical::<f64>(self.hidpi_factor)
+                .to_logical::<f64>(window.scale_factor()),
         }
     }
     /// Handles a winit event.
@@ -490,10 +490,10 @@ impl WinitPlatform {
     fn handle_window_event(&mut self, io: &mut Io, window: &Window, event: &WindowEvent) {
         match *event {
             WindowEvent::Resized(logical_size) => {
-                let logical_size = self.scale_size_from_winit(window, logical_size);
+                let logical_size = logical_size.to_logical::<f64>(window.scale_factor());
                 io.display_size = [logical_size.width as f32, logical_size.height as f32];
             }
-            WindowEvent::HiDpiFactorChanged(scale) => {
+            WindowEvent::ScaleFactorChanged { scale_factor, new_inner_size } => {
                 let hidpi_factor = match self.hidpi_mode {
                     ActiveHiDpiMode::Default => scale,
                     ActiveHiDpiMode::Rounded => scale.round(),
