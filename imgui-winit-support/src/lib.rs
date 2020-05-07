@@ -495,8 +495,8 @@ impl WinitPlatform {
             }
             WindowEvent::ScaleFactorChanged { scale_factor, new_inner_size } => {
                 let hidpi_factor = match self.hidpi_mode {
-                    ActiveHiDpiMode::Default => scale,
-                    ActiveHiDpiMode::Rounded => scale.round(),
+                    ActiveHiDpiMode::Default => scale_factor,
+                    ActiveHiDpiMode::Rounded => scale_factor.round(),
                     _ => return,
                 };
                 // Mouse position needs to be changed while we still have both the old and the new
