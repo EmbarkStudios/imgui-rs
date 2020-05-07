@@ -15,7 +15,7 @@ travis-ci = { repository = "Gekkio/imgui-rs" }
 [dependencies]
 imgui = { version = "0.3.0-pre", path = "../" }
 winit-19 = { version = ">= 0.16, <= 0.19", package = "winit", optional = true }
-winit-20 = { git = "https://github.com/rust-windowing/winit", rev = "b8828105cf6231e249da279851285aecd2970b4b" }
+winit-20 = { git = "https://github.com/rust-windowing/winit", rev = "b8828105cf6231e249da279851285aecd2970b4b", package = "winit", optional = true}
 
 [features]
 default = ["winit-19"]
