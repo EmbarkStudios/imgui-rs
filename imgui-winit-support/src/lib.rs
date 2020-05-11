@@ -639,7 +639,7 @@ impl WinitPlatform {
                         imgui::MouseCursor::ResizeNESW => MouseCursor::NeswResize,
                         imgui::MouseCursor::ResizeNWSE => MouseCursor::NwseResize,
                         imgui::MouseCursor::Hand => MouseCursor::Hand,
-                        _ => MouseCursor::Arrow,
+                        imgui::MouseCursor::NotAllowed => MouseCursor::NotAllowed,
                     });
                 }
                 _ => window.hide_cursor(true),
