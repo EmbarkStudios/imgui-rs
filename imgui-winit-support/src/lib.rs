@@ -1088,22 +1088,15 @@ impl WinitPlatform {
                 phase: TouchPhase::Moved,
                 ..
             } => match delta {
-                MouseScrollDelta::LineDelta(h, v) => {
-                    io.mouse_wheel_h = h;
-                    io.mouse_wheel = v;
+                MouseScrollDelta::LineDelta(x, y) => {
+                    let line_height = 8.0; // magic value!
+                    io.mouse_wheel_h += x * line_height;
+                    io.mouse_wheel += y * line_height;
                 }
                 MouseScrollDelta::PixelDelta(pos) => {
                     let pos = pos.to_logical::<f64>(self.hidpi_factor);
-                    match pos.x.partial_cmp(&0.0) {
-                        Some(Ordering::Greater) => io.mouse_wheel_h += 1.0,
-                        Some(Ordering::Less) => io.mouse_wheel_h -= 1.0,
-                        _ => (),
-                    }
-                    match pos.y.partial_cmp(&0.0) {
-                        Some(Ordering::Greater) => io.mouse_wheel += 1.0,
-                        Some(Ordering::Less) => io.mouse_wheel -= 1.0,
-                        _ => (),
-                    }
+                    io.mouse_wheel_h += pos.x;
+                    io.mouse_wheel += pos.y;
                 }
             },
             WindowEvent::MouseInput { state, button, .. } => {
